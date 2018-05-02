@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="hangyhan,hangyhan@mail.ustc.edu.cn"><title> · hangyhan@USTC</title><meta name="description" content="Bit Torrent 协议一、背景
+对于保存大文件给用户下载的中小型网站，在互联网爆发式增长下，用户数量越来越多，传输的文件越来越大，使用一台或几台服务器和传统的FTP、HTTP协议难以满足用户对下载速度的要求。
+例如一个视频下载网站，如果是高清格式，一段20分钟的视频资源大小可达500MB以上；"><meta name="keywords" content="Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">hangyhan@USTC</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a></a></h3></div><div class="post-content"><h1 id="Bit-Torrent-协议"><a href="#Bit-Torrent-协议" class="headerlink" title="Bit Torrent 协议"></a>Bit Torrent 协议</h1><h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><ul>
+<li>对于保存大文件给用户下载的中小型网站，在互联网爆发式增长下，用户数量越来越多，传输的文件越来越大，使用一台或几台服务器和传统的FTP、HTTP协议难以满足用户对下载速度的要求。</li>
+<li>例如一个视频下载网站，如果是高清格式，一段20分钟的视频资源大小可达500MB以上；同时视频的资源也非常多。这样的网站如果使用HTTP或者FTP协议，几台服务器无法满足如此大的用户请求量，磁盘读取速度和带宽也是一个限制。</li>
+<li>在以上背景下，BitTorretn协议应运而生。</li>
+</ul>
+<h2 id="二、BT下载流程"><a href="#二、BT下载流程" class="headerlink" title="二、BT下载流程"></a>二、BT下载流程</h2><p>[2]原理简介视频</p>
+<ol>
+<li><p>B encode</p>
+<ul>
+<li><p>在Bit Torrent协议中的数据几乎都是用B encode进行编码的，B encode是一种类似于XML和JSON的数据组织形式，可以表达字符串、整数两种基本类型，列表、字典两种数据结构。</p>
+</li>
+<li><p>编码方式</p>
+<ul>
+<li><p>字节串</p>
+<p>&lt;串长&gt;:&lt;串数据&gt;</p>
+<p>spam  —-编码—&gt;  4:spam</p>
+</li>
+<li><p>整数</p>
+<p>i&lt;十进制数&gt;e</p>
+<p>3  —-编码—&gt;  i3e</p>
+</li>
+<li><p>列表</p>
+<p>i&lt;&lt;串长1&gt;:&lt;串数据1&gt;&lt;串长2&gt;:&lt;串数据2&gt;…&gt;e</p>
+<p>spam eggs  —-编码—&gt;  i4:spam4:eggse</p>
+</li>
+<li><p>字典</p>
+<p>d&lt;&lt;key串长1&gt;:&lt;key串数据1&gt;&lt;value串长1&gt;:&lt;value串数据1&gt;&lt;key串长2&gt;:&lt;key串数据2&gt;&lt;value串长2&gt;:&lt;value串数据2&gt;…&gt;e</p>
+<p>dictionary { “cow” =&gt; “moo”, “spam” =&gt; “eggs” }  —-编码—&gt;  d3:cow3:moo4:spam4:eggse</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>资源的发布——元信息文件 .torrent</p>
+<ul>
+<li><p>资源的发布者，使用BitTorrent工具选择一个资源，指定Tracker服务器的URL[1]，会生成一个.torrent文件。</p>
+</li>
+<li><p>.torrent文件是使用B encode进行编码的一个字典数据结构，主要的键值对有：</p>
+<p>​</p>
+<p>|   key    |          value           |     value      |<br>| :——: | :———————-: | :————: |<br>|   info   | piece length (也是Key值) |  一个片的长度  |<br>|          |    pieces(也是Key值)     | 正确性验证信息 |<br>|          |   name/path(也是Key值)   | 具体文件的信息 |<br>| announce |    tracker服务器的URL    |                |</p>
+<p>BT协议将一个文件分成若干片，便于客户端从各个主机下载各个片。</p>
+</li>
+<li><p>生成好.torrent文件之后，发布者需要先作为下载者根据.torrent文件进行下载，这样就会链接到tracker服务器。由于发布者已经有了完整的资源文件，tracker服务器会得知这是一个完全下载完成的用户，会把发布者的信息保存在tracker服务器中。</p>
+</li>
+<li><p>发布者还需要将.torrent文件放在服务器上，用户可以通过HTTP或FTP协议下载这个.torrent文件。</p>
+</li>
+</ul>
+</li>
+<li><p>资源的下载——客户端和Tracker服务器</p>
+<p><img src="/2018/05/02/Bit-Torrent-协议概述/Users\hangy\Desktop\hangyhan.github.io\source\_posts\Bit-Torrent-协议概述\1523694001876.png" alt=""></p>
+<p>​</p>
+<p>​</p>
+<ul>
+<li><p>为了下载资源，首先通过HTTP或FTP协议直接从服务器上得到.torrent文件，然后使用BitTorrent软件客户端打开.torrent文件，软件会根据.torrent中的name/path元信息显示这个资源中有哪些文件。用户可以选定资源中的某几个文件进行下载</p>
+</li>
+<li><p>文件选择确定后，BitTorrent软件客户端就开始了下载。客户端的第一步是根据.torrent中的URL使用HTTP GET请求，这个请求中包含了很多参数，主要的有：</p>
+<p>|  参数名   |                             内容                             |<br>| :——-: | :———————————————————-: |<br>| info_hash | .torrent文件中info对应的值的hash散列，可被Tracker服务器用来索引唯一的对应资源 |<br>|  peer_id  |                         客户端的名字                         |<br>|    ip     |                       客户端的IP地址。                       |<br>|   port    | 客户端监听的端口号，用于接收response。Tracker服务器会记录下端口号用于通知其他客户端。 |</p>
+</li>
+<li><p>在Tracker服务器收到客户端的HTTP GET请求后，会返回B encode形式的文本，该文本同样是一个字典结构。其中最关键的一个键值对是peers，它的值是一个列表结构，列表中的每一项由{peer_id, ip, port}三个值组成。</p>
+<p>这些信息在每个客户端连接Tracker服务器的时候都发送过，并且被Tracker服务器保存了下来。</p>
+<p>新来的客户端自然要获取到这些正在下载或者已下载完成的客户端的ip，port等信息，有了这些信息，用户就不需要像FTP或者HTTP协议一样持续找服务器获取资源，可以从这些其他客户端上请求获取资源。</p>
+</li>
+</ul>
+</li>
+<li><p>peer to peer (P2P) —— 从其他的下载用户那里获取数据</p>
+<ul>
+<li><p>客户端从Tracker服务器获取到若干其他下载者(peer)的ip和port信息，会进行请求并维持跟每一个peer的连接状态。</p>
+</li>
+<li><p>其他peer和该客户端的状态主要有下列状态信息</p>
+<ul>
+<li>choked：远程客户端拒绝响应任何本客户端的请求。</li>
+<li>interested：远程客户端对本客户端的数据感兴趣，当本客户端unchoked远程客户端后，远程客户端会请求数据</li>
+</ul>
+<p>所以应该有4个参数，分别表示本客户端对远程客户端是否chock，是否interested，远程客户端对本客户端是否chock，是否interested。</p>
+</li>
+<li><p>当一个客户端对一个远程peer感兴趣并且那个远程peer没有choke这个客户端，那么这个客户端就可以从远程peer下载块(block)。</p>
+</li>
+<li><p>第一次通信会先发送握手报文，告诉远程客户端本客户端的一些信息，包括info_hash和peer_id。</p>
+</li>
+<li><p>接下来经过别的一些报文在本地客户端和若干个远程客户端之间的来回传递，就能够获取到资源文件。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><ul>
+<li>在传统的下载方式中，用户若想下载一个文件，是通过与一个服务器建立连接；这一台服务器线性的为用户传输其所需的资源。当同时从该服务器上下载资源的用户个数很多时，该服务器的负荷就会很大。因此每个用户的下载速度就会受到限制。</li>
+<li>bittorrent协议的核心思想是参与下载的每个用户即是资源获取者也是资源贡献者。bittorrent将每个资源进行分片，需要下载该资源的用户从其他各个用户获取该资源的不同片，同时将自己获得的片贡献给需要该片的其他用户。</li>
+</ul>
+<p>附：</p>
+<p>[1]URL：</p>
+<ul>
+<li>统一资源定位符( Uniform Resource Locator )是对可以从互联网上得到的资源的位置和访问方法的一种简洁的表示，是互联网上标准资源的地址。互联网上的每个文件都有一个唯一的URL，它包含的信息指出文件的位置以及浏览器应该怎么处理它。</li>
+<li>基本URL包含协议、IP地址、路径和文件名。</li>
+</ul>
+<p>[2]原理简介视频：<a href="https://www.youtube.com/watch?v=6PWUCFmOQwQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=6PWUCFmOQwQ</a></p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2018-05-02</span><i class="fa fa-tag"></i></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,http://yoursite.com/2018/05/02/Bit-Torrent-协议概述/,hangyhan@USTC,,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="next pagbuttons"><a class="btn" role="navigation" href="/2018/03/28/2018-03-28-/" title="">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
