@@ -42,13 +42,37 @@
 </ul>
 </li>
 </ol>
-<pre><code>|   key    |          value           |     value      |
-| :-: | :-: | :-: | 
-|   info   | piece length (也是Key值) |  一个片的长度  |
-|          |    pieces(也是Key值)     | 正确性验证信息 |
-|          |   name/path(也是Key值)   | 具体文件的信息 |
-| announce |    tracker服务器的URL    |                |
-</code></pre><p>BT协议将一个文件分成若干片，便于客户端从各个主机下载各个片。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">key</th>
+<th style="text-align:center">value</th>
+<th style="text-align:center">value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">info</td>
+<td style="text-align:center">piece length (也是Key值)</td>
+<td style="text-align:center">一个片的长度</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">pieces(也是Key值)</td>
+<td style="text-align:center">正确性验证信息</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">name/path(也是Key值)</td>
+<td style="text-align:center">具体文件的信息</td>
+</tr>
+<tr>
+<td style="text-align:center">announce</td>
+<td style="text-align:center">tracker服务器的URL</td>
+</tr>
+</tbody>
+</table>
+<p>BT协议将一个文件分成若干片，便于客户端从各个主机下载各个片。</p>
 <ul>
 <li>生成好.torrent文件之后，发布者需要先作为下载者根据.torrent文件进行下载，这样就会链接到tracker服务器。由于发布者已经有了完整的资源文件，tracker服务器会得知这是一个完全下载完成的用户，会把发布者的信息保存在tracker服务器中。</li>
 <li>发布者还需要将.torrent文件放在服务器上，用户可以通过HTTP或FTP协议下载这个.torrent文件。</li>
