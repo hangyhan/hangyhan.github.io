@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="hangyhan,hangyhan@mail.ustc.edu.cn"><title>Bit Torrent 协议 · hangyhan@USTC</title><meta name="description" content="Bit Torrent 协议一、背景
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="hangyhan,hangyhan@mail.ustc.edu.cn"><title>Bit Torrent 协议 · hangyhan@USTC</title><meta name="description" content="一、背景
 对于保存大文件给用户下载的中小型网站，在互联网爆发式增长下，用户数量越来越多，传输的文件越来越大，使用一台或几台服务器和传统的FTP、HTTP协议难以满足用户对下载速度的要求。
-例如一个视频下载网站，如果是高清格式，一段20分钟的视频资源大小可达500MB以上；"><meta name="keywords" content="Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">hangyhan@USTC</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Bit Torrent 协议</a></h3></div><div class="post-content"><h1 id="Bit-Torrent-协议"><a href="#Bit-Torrent-协议" class="headerlink" title="Bit Torrent 协议"></a>Bit Torrent 协议</h1><h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><ul>
+例如一个视频下载网站，如果是高清格式，一段20分钟的视频资源大小可达500MB以上；同时视频的资源也非常多。这样"><meta name="keywords" content="Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">hangyhan@USTC</a></h3></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Bit Torrent 协议</a></h3></div><div class="post-content"><h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><ul>
 <li>对于保存大文件给用户下载的中小型网站，在互联网爆发式增长下，用户数量越来越多，传输的文件越来越大，使用一台或几台服务器和传统的FTP、HTTP协议难以满足用户对下载速度的要求。</li>
 <li>例如一个视频下载网站，如果是高清格式，一段20分钟的视频资源大小可达500MB以上；同时视频的资源也非常多。这样的网站如果使用HTTP或者FTP协议，几台服务器无法满足如此大的用户请求量，磁盘读取速度和带宽也是一个限制。</li>
 <li>在以上背景下，BitTorretn协议应运而生。</li>
@@ -42,19 +42,40 @@
 </ul>
 </li>
 </ol>
-<pre><code>|   key    |          value           |     value      |
-| :-: | :-: | :-: |
-|   info   | piece length (也是Key值) |  一个片的长度  |
-|          |    pieces(也是Key值)     | 正确性验证信息 |
-|          |   name/path(也是Key值)   | 具体文件的信息 |
-| announce |    tracker服务器的URL    |                |
-
-BT协议将一个文件分成若干片，便于客户端从各个主机下载各个片。
-</code></pre><ul>
-<li><p>生成好.torrent文件之后，发布者需要先作为下载者根据.torrent文件进行下载，这样就会链接到tracker服务器。由于发布者已经有了完整的资源文件，tracker服务器会得知这是一个完全下载完成的用户，会把发布者的信息保存在tracker服务器中。</p>
-</li>
-<li><p>发布者还需要将.torrent文件放在服务器上，用户可以通过HTTP或FTP协议下载这个.torrent文件。</p>
-</li>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">key</th>
+<th style="text-align:center">value</th>
+<th style="text-align:center">value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">info</td>
+<td style="text-align:center">piece length (也是Key值)</td>
+<td style="text-align:center">一个片的长度</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">pieces(也是Key值)</td>
+<td style="text-align:center">正确性验证信息</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">name/path(也是Key值)</td>
+<td style="text-align:center">具体文件的信息</td>
+</tr>
+<tr>
+<td style="text-align:center">announce</td>
+<td style="text-align:center">tracker服务器的URL</td>
+</tr>
+</tbody>
+</table>
+<p>BT协议将一个文件分成若干片，便于客户端从各个主机下载各个片。</p>
+<ul>
+<li>生成好.torrent文件之后，发布者需要先作为下载者根据.torrent文件进行下载，这样就会链接到tracker服务器。由于发布者已经有了完整的资源文件，tracker服务器会得知这是一个完全下载完成的用户，会把发布者的信息保存在tracker服务器中。</li>
+<li>发布者还需要将.torrent文件放在服务器上，用户可以通过HTTP或FTP协议下载这个.torrent文件。</li>
 </ul>
 <ol start="3">
 <li><p>资源的下载——客户端和Tracker服务器</p>
@@ -65,8 +86,35 @@ BT协议将一个文件分成若干片，便于客户端从各个主机下载各
 <li><p>为了下载资源，首先通过HTTP或FTP协议直接从服务器上得到.torrent文件，然后使用BitTorrent软件客户端打开.torrent文件，软件会根据.torrent中的name/path元信息显示这个资源中有哪些文件。用户可以选定资源中的某几个文件进行下载</p>
 </li>
 <li><p>文件选择确定后，BitTorrent软件客户端就开始了下载。客户端的第一步是根据.torrent中的URL使用HTTP GET请求，这个请求中包含了很多参数，主要的有：</p>
-<p>|  参数名   |                             内容                             |<br>| :——-: | :———————————————————-: |<br>| info_hash | .torrent文件中info对应的值的hash散列，可被Tracker服务器用来索引唯一的对应资源 |<br>|  peer_id  |                         客户端的名字                         |<br>|    ip     |                       客户端的IP地址。                       |<br>|   port    | 客户端监听的端口号，用于接收response。Tracker服务器会记录下端口号用于通知其他客户端。 |</p>
 </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">参数名</th>
+<th style="text-align:center">内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">info_hash</td>
+<td style="text-align:center">.torrent文件中info对应的值的hash散列，可被Tracker服务器用来索引唯一的对应资源</td>
+</tr>
+<tr>
+<td style="text-align:center">peer_id</td>
+<td style="text-align:center">客户端的名字</td>
+</tr>
+<tr>
+<td style="text-align:center">ip</td>
+<td style="text-align:center">客户端的IP地址。</td>
+</tr>
+<tr>
+<td style="text-align:center">port</td>
+<td style="text-align:center">客户端监听的端口号，用于接收response。Tracker服务器会记录下端口号用于通知其他客户端。</td>
+</tr>
+</tbody>
+</table>
+<ul>
 <li><p>在Tracker服务器收到客户端的HTTP GET请求后，会返回B encode形式的文本，该文本同样是一个字典结构。其中最关键的一个键值对是peers，它的值是一个列表结构，列表中的每一项由{peer_id, ip, port}三个值组成。</p>
 <p>这些信息在每个客户端连接Tracker服务器的时候都发送过，并且被Tracker服务器保存了下来。</p>
 <p>新来的客户端自然要获取到这些正在下载或者已下载完成的客户端的ip，port等信息，有了这些信息，用户就不需要像FTP或者HTTP协议一样持续找服务器获取资源，可以从这些其他客户端上请求获取资源。</p>
